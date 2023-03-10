@@ -40,6 +40,7 @@ readFortran = function(dir=getwd(),filename_data="amarlx",filename_params="param
 # uses velocity of solid phase to transform time series into depth series
 time_to_depth = function(time_data){
   # warn user of negative velocities
+  reorder_depths=FALSE
   if (any(time_data$velocity_solid_phase_dimless <= 0)){
     warning("Negative velocities of solid phase")
     reorder_depths=TRUE # if velocities are negative, depths need to be reordered
@@ -60,7 +61,7 @@ time_to_depth = function(time_data){
   colnames(depth_data)[colnames(depth_data)=="time_dimless"]="depth_dimless"
   # if velocities are negative, order depths to be strictly increasing
   # and permutate all other values accordingly
-  if(reorder_depths){
+  if(reorder_depths==T){
     # vector of ordering indices
     new_order=sort(x=depth_data$depth_dimless,decreasing = FALSE,index.return=TRUE)$ix
     # order values 
