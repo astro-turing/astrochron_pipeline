@@ -10,13 +10,17 @@ loadPackages=function(packagenames){
 
 #### Import data from Fortran ####
 
-readFortran = function(dir=getwd(),filename_data="amarlx",filename_params="params"){
+readFortran = function(dir=getwd(),filename_data="amarlx",filename_params="params", depth_i){
 # looks in the directory dir for output files written by Fortran, and reads 
-# the values at the bottom of the system into R
+# the values at one of the four positions (depth_i) in the system into R
 # currently (5th Feb 2023) only works with the "corrected by lheureux" branch
+  if(!depth_i %in% c(1:4)) stop("Position in the system must be [1, 2, 3, 4]")
   data=read.table(paste(dir,"/",filename_data,sep=""),header=TRUE)
-  
-  data2=data[,c("t","CA.3","AR.3","P.3","U")] # data at bottom of system
+  position<-matrix(c("CA","AR","P",
+                     "CA.1","AR.1","P.1",
+                      "CA.2","AR.2","P.2",
+                      "CA.3","AR.3","P.3"), nrow = 4, ncol = 3, byrow = TRUE)
+  data2=data[,c("t",position[depth_i,],"U")] 
   
   # convert vals to numeric
   for (colname in colnames(data2)){
